@@ -1,3 +1,152 @@
-# Northern Lights Appraisals
+# Northern Lights Appraisals — Website
 
-Repository for the Northern Lights Appraisals website. Active development is on the `claude/northern-lights-website-I1NHa` branch.
+A production-grade marketing website for Northern Lights Appraisals, a family-owned real estate appraisal firm based in Edmonton, Alberta.
+
+Cinematic dark aesthetic, custom WebGL/Canvas aurora background, editorial typography (Fraunces / Geist / JetBrains Mono), and a 20-page Next.js architecture.
+
+## Stack
+
+- **Next.js 14** App Router + TypeScript
+- **Tailwind CSS** with custom design tokens
+- **Framer Motion** for page transitions and reveals
+- **Custom Canvas aurora** (pseudo-Perlin sine bands + starfield)
+- **React Hook Form + Zod** for the multi-step E-Quote and contact forms
+- **Lucide React** icons
+- Geist (sans), Fraunces (display serif), JetBrains Mono (mono) — all variable, optical-size aware
+
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+```bash
+npm run build      # production build
+npm run start      # serve production build
+npm run typecheck  # tsc --noEmit
+npm run lint       # next lint
+```
+
+## Project structure
+
+```
+/app
+  layout.tsx                # root layout, fonts, header/footer, JSON-LD
+  globals.css               # design tokens + utility classes
+  page.tsx                  # / home
+  about/page.tsx
+  team/page.tsx
+  services/page.tsx
+  services/[slug]/page.tsx  # 6 detail pages (residential, commercial, farm, acreage, insurance, wemeasurehomes)
+  fees/page.tsx
+  order/page.tsx
+  testimonials/page.tsx
+  blog/page.tsx
+  blog/[slug]/page.tsx
+  partners/page.tsx
+  careers/page.tsx
+  faq/page.tsx
+  contact/page.tsx
+  not-found.tsx
+  sitemap.ts
+  robots.ts
+/components
+  /aurora                   # AuroraCanvas, AuroraDivider, CursorTrail, MagneticButton, CompassRose
+  /layout                   # Header, Footer, Logo, PageTransition
+  /sections                 # HeroAurora, StatsBand, TrustBand, ServicesGrid, ConstellationMap, TeamCard, OrderForm, ContactForm, ...
+  /ui                       # Container, SectionHeading, Eyebrow, Reveal, Counter, Accordion, Tabs
+/lib/content                # All content as typed .ts files — edit here, not in JSX
+  site.ts
+  team.ts
+  services.ts
+  testimonials.ts
+  fees.ts
+  faq.ts
+  blog.ts
+  nav.ts
+/public
+  og-default.svg            # default Open Graph image
+```
+
+## Editing content
+
+All content lives in `/lib/content/` so non-developers can update the site without touching JSX.
+
+| To update… | Edit |
+|---|---|
+| Phone, email, hours, address, social links | `lib/content/site.ts` |
+| Team bios, designations, awards | `lib/content/team.ts` |
+| Service descriptions, process steps, audience | `lib/content/services.ts` |
+| Fee schedule | `lib/content/fees.ts` |
+| Testimonials | `lib/content/testimonials.ts` |
+| FAQ | `lib/content/faq.ts` |
+| Blog posts / market reports | `lib/content/blog.ts` |
+| Header / footer nav links | `lib/content/nav.ts` |
+
+### Adding a new blog post
+
+Add a new entry to `blogPosts` in `lib/content/blog.ts`:
+
+```ts
+{
+  slug: "edmonton-market-report-may-2026",
+  title: "Edmonton Market Report — May 2026",
+  date: "2026-05-31",
+  region: "Edmonton",
+  excerpt: "...",
+  body: ["First paragraph...", "Second paragraph..."]
+}
+```
+
+The route `/blog/[slug]` is generated automatically.
+
+### Replacing team photos
+
+Each member's `photo` field in `lib/content/team.ts` currently points to an SVG decorative placeholder. To use real photos:
+
+1. Drop a JPG/PNG into `/public/images/team/` (e.g. `gerhardt.jpg`).
+2. Update the `photo` field to point at the new file.
+3. Replace `<TeamPortrait name={member.name} />` in `components/sections/TeamCard.tsx` with `<Image src={member.photo} alt={member.name} fill className="object-cover" />` (uses `next/image`).
+
+### Replacing partner logos
+
+`app/partners/page.tsx` renders dashed placeholder boxes. Drop logo SVGs into `/public/images/partners/` and replace the placeholder loop with real `<Image>` tags.
+
+## Deployment to Vercel
+
+1. Push the repo to GitHub.
+2. Import the project at [vercel.com/new](https://vercel.com/new).
+3. Vercel auto-detects Next.js — no config needed.
+4. Add the production domain (e.g. `northernlightsappraisals.ca`) in Vercel's domain settings.
+
+## Accessibility
+
+- Semantic HTML throughout (`<main>`, `<nav>`, `<article>`, `<section>`, proper heading hierarchy).
+- Skip-link to `#main`, visible focus rings (aurora-green, 2px).
+- ARIA labels on icon-only buttons.
+- All animation respects `prefers-reduced-motion` — Aurora canvas falls back to a static gradient, cursor trail and counters disable, page transitions become instant.
+- Color contrast on text/background pairs meets WCAG AA.
+
+## SEO
+
+- Per-page metadata (title, description, canonical) via `generateMetadata`.
+- Open Graph + Twitter card on every page (default OG image at `/og-default.svg`).
+- `LocalBusiness` JSON-LD on the root layout and contact page.
+- `sitemap.xml` and `robots.txt` generated by `app/sitemap.ts` and `app/robots.ts`.
+
+## Performance
+
+- Variable fonts loaded via `next/font/google` with `display: swap`.
+- Aurora canvas runs at 60fps with cheap pseudo-Perlin (stacked sines) — no shader pipeline required.
+- Reduced-motion fallback for the canvas, cursor trail, counters, and page transitions.
+- All page-level interactivity isolated in client components; data and copy is rendered on the server.
+
+## Brand notes
+
+- **Background is 95% black/near-black.** Aurora colors are accents — never fill large flat surfaces with them.
+- **Aurora gradient text** is reserved for one hero word per page. Don't sprinkle it.
+- **Hairline borders** at 1px, ~30% opacity steel.
+- **Whitespace is the design.** Sections breathe — minimum 8rem vertical padding on desktop.
