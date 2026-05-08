@@ -226,6 +226,14 @@ body {
   transform: scaleX(1);
 }
 
+.link-aurora.is-active {
+  color: var(--frost);
+}
+
+.link-aurora.is-active::after {
+  transform: scaleX(1);
+}
+
 .duotone {
   filter: grayscale(1) sepia(1) hue-rotate(120deg) saturate(2) brightness(0.85);
   transition: filter 600ms ease;
