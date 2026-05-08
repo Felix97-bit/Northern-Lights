@@ -5,7 +5,6 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PageTransition from "@/components/layout/PageTransition";
-import CursorTrail from "@/components/aurora/CursorTrail";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -133,7 +132,6 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <CursorTrail />
         <Header />
         <PageTransition>
           <main id="main">{children}</main>
