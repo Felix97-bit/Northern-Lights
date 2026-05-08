@@ -62,7 +62,7 @@ export default function Header() {
               {site.phone}
             </a>
             <MagneticButton href="/order" variant="primary" className="!py-2.5 !px-5 !text-sm">
-              Order Now
+              Get a Quote
             </MagneticButton>
           </div>
 
