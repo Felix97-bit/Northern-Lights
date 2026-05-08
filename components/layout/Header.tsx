@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,6 +13,10 @@ import { site } from "@/lib/content/site";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -42,15 +47,21 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
-            {primaryNav.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="link-aurora text-sm text-frost/85 hover:text-frost"
-              >
-                {n.label}
-              </Link>
-            ))}
+            {primaryNav.map((n) => {
+              const active = isActive(n.href);
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`link-aurora text-sm hover:text-frost ${
+                    active ? "is-active text-frost" : "text-frost/85"
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
